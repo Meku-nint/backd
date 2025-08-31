@@ -15,4 +15,6 @@ const orderSchema=new mongoose.Schema({
      detail:{
         type:String,required:true
     }
-})
+},{timestamps:true});
+const Order=mongoose.model("Order",orderSchema);
+export default Order;

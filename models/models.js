@@ -14,7 +14,20 @@ const orderSchema=new mongoose.Schema({
     },
      detail:{
         type:String,required:true
-    }
+    },
+   status: {
+    type: String,
+    enum: [
+      "Pending",
+      "Confirmed",
+      "Assigned",
+      "Picked Up",
+      "In Transit",
+      "Out for Delivery",
+      "Delivered",
+    ],
+    default: "Pending",
+  }
 },{timestamps:true});
 const Order=mongoose.model("Order",orderSchema);
 export default Order;

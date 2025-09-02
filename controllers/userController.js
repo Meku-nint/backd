@@ -4,7 +4,7 @@ export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);
     const {departure,destination,weight,phone,detail}=req.body;
     try {
-        if(!departure ||!destination||!weight||!phone||!detail){
+        if(!departure ||!destination||!weight||!phone||!detail ||!fee){
             return res.status(400).json({
                 error:"All fields are required",
                 missing:{

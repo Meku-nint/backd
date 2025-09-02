@@ -18,6 +18,14 @@ const orderSchema=new mongoose.Schema({
     orderID:{
         type:Number,required:true
     },
+    payed:{
+        type:Boolean,
+        default:false
+    },
+    fee:{
+        type:Number,
+        required:true
+    },
    status: {
     type: String,
     enum: [

@@ -40,5 +40,23 @@ const orderSchema=new mongoose.Schema({
     default: "Pending",
   }
 },{timestamps:true});
+const riderSchema=new mongoose.Schema({
+    riderName:{
+        type:String,required:true
+    },
+    riderEmail:{
+        type:String,required:true
+    },
+    phone:{
+          type:String,required:true
+    },
+    file:{
+    type:String
+    },
+    password:{
+        type:String,required:true
+    },
+},{timestamps:true});
 const Order=mongoose.model("Order",orderSchema);
-export default Order;
+const Rider=mongoose.model("Rider",riderSchema);
+export default {Order,Rider};

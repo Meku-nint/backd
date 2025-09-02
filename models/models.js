@@ -15,6 +15,9 @@ const orderSchema=new mongoose.Schema({
      detail:{
         type:String,required:true
     },
+    orderID:{
+        type:Number,required:true
+    },
    status: {
     type: String,
     enum: [

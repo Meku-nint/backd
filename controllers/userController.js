@@ -19,7 +19,7 @@ export const newOrders =async(req,res)=>{
         }
         const order =new Order ({departure, destination, weight, phone, detail,orderID});
         await order.save();
-        return res.status(201).json({message:"order is successful submitted copy your order ID" ,orderID});
+        return res.status(201).json({message:`order is successful submitted copy your order ID , ${orderID}`});
     } catch (error) {
         return res.status(500).json({error:error.message});
     }

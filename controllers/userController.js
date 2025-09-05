@@ -3,8 +3,6 @@ import Order from "../models/models.js";
 import Rider from "../models/models.js";
 import multer from "multer";
 import path from "path";
-import Rider from "../models/Rider.js"; // adjust path if needed
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -14,7 +12,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+export const upload = multer({ storage });
 
 export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);

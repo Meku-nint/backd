@@ -57,6 +57,15 @@ const riderSchema=new mongoose.Schema({
         type:String,required:true
     },
 },{timestamps:true});
+const priceSchema=new mongoose.Schema({
+    weight:{
+        type:String,required:true
+    },
+    price:{
+        type:Number,required:true
+    }
+});
+const Price=mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);
 export default {Order,Rider};

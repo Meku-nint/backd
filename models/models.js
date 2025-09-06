@@ -68,4 +68,4 @@ const priceSchema=new mongoose.Schema({
 const Price=mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);
-export default {Order,Rider};
+export default {Order,Rider,Price};

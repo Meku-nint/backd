@@ -64,3 +64,23 @@ export const newRider = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+export const setPrice =async(req,res)=>{
+    const {weight,price}=req.body;
+    if(!weight ||!price){
+        return res.status(400).json({
+            error:"All fields are required",
+            missing:{
+                weight:!weight,
+                price:!price,          
+            }
+        });
+    }
+    try {
+      const newPrice =new price({weight,price});
+      await newPrice.save();
+      return res.status(201).json({message:"Price set successfully"});
+      
+    } catch (error) {
+        return res.status(500).json({error:error.message});
+    }
+}

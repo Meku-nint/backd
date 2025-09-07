@@ -65,7 +65,7 @@ export const newRider = async (req, res) => {
   }
 };
 export const setPrice =async(req,res)=>{
-    const {weight,price}=req.body;
+    const {price,weight}=req.body;
     if(!weight ||!price){
         return res.status(400).json({
             error:"All fields are required",

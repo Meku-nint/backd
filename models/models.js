@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { type } from "os";
+import { stringify } from "querystring";
 const orderSchema=new mongoose.Schema({
     departure:{
         type:String,required:true
@@ -56,6 +58,9 @@ const riderSchema=new mongoose.Schema({
     password:{
         type:String,required:true
     },
+    account:{
+        type:{string,required:true}
+    }
 },{timestamps:true});
 const priceSchema = new mongoose.Schema({
   price: {
@@ -68,6 +73,12 @@ const priceSchema = new mongoose.Schema({
   }
 });
 
+const Balance=new mongoose.Schema({
+    userId:{type:mongoose.Schema.Types.ObjectId,ref:"Rider",required:true},
+    Name:{type:String,required:true},
+    balance:{type:Number,default:0},
+    status:{type:String,default:"unpaid"}
+})
 const Price = mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);

@@ -1,9 +1,9 @@
 import express from "express"
-import Order from "../models/models.js";
-import Rider from "../models/models.js";
-import Price from "../models/models.js";
+
 import multer from "multer";
 import path from "path";
+import models  from "../models/models.js";
+const {Price,Order,Rider} =models;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");

@@ -52,14 +52,14 @@ const riderSchema=new mongoose.Schema({
     phone:{
           type:String,required:true
     },
-    file:{
+    filled:{
     type:String
     },
     password:{
         type:String,required:true
     },
     account:{
-        type:{string,required:true}
+        type:String,required:true
     }
 },{timestamps:true});
 const priceSchema = new mongoose.Schema({

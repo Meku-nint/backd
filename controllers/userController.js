@@ -41,7 +41,7 @@ export const newOrders =async(req,res)=>{
 export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
 
-  const { riderName, riderEmail, phone } = req.body;
+  const { riderName, riderEmail, phone,account,filled} = req.body;
   console.log(req.body);
   const file = req.file ? req.file.filename : null; // multer saves file info in req.file
 
@@ -56,6 +56,7 @@ export const newRider = async (req, res) => {
       phone,
       file,
       password,
+      account
     });
 
     await rider.save();

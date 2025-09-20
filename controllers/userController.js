@@ -3,7 +3,7 @@ import express from "express"
 import multer from "multer";
 import path from "path";
 import models  from "../models/models.js";
-const {Price,Order,Rider} =models;
+const {Price,Order,Rider,Balance} =models;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -49,7 +49,6 @@ export const newRider = async (req, res) => {
     if (!riderEmail || !riderName || !phone) {
       return res.status(400).json({ error: "All fields are required" });
     }
-
     const rider = new Rider({
       riderName,
       riderEmail,

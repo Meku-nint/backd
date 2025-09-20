@@ -43,7 +43,7 @@ export const newRider = async (req, res) => {
 
   const { riderName, riderEmail, phone,account,filled} = req.body;
   console.log(req.body);
-  const file = req.file ? req.file.filename : null; // multer saves file info in req.file
+  const file = req.file ? req.file.filename : null;
 
   try {
     if (!riderEmail || !riderName || !phone) {
@@ -59,7 +59,8 @@ export const newRider = async (req, res) => {
     });
 
     await rider.save();
-
+    const balance = new Balance({userId:rider._id,Name:rider.riderName});
+    await balance.save();
     return res.status(201).json({ message: "The rider added successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message });

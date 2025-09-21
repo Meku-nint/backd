@@ -53,6 +53,7 @@ const riderSchema=new mongoose.Schema({
           type:String,required:true
     },
     filled:{
+
     type:String
     },
     password:{
@@ -74,10 +75,10 @@ const priceSchema = new mongoose.Schema({
 });
 
 const balanceSchema=new mongoose.Schema({
-    userId:{type:mongoose.Schema.Types.ObjectId,ref:"Rider",required:true},
-    Name:{type:String,required:true},
-    balance:{type:Number,default:0},
-    status:{type:String,default:"unpaid"}
+        userId:{type:mongoose.Schema.Types.ObjectId,ref:"Rider",required:true},
+            Name:{type:String,required:true},
+                balance:{type:Number,default:0},
+                    status:{type:String,default:"unpaid"}
 })
 const Balance=mongoose.model("Balance",balanceSchema);
 const Price = mongoose.model("Price",priceSchema);

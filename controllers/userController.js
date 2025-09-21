@@ -17,7 +17,7 @@ export const upload = multer({ storage });
 
 export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);
-    const {departure,destination,weight,phone,detail}=req.body;
+    const {departure,destination,weight,phone,detail,fee}=req.body;
     try {
         if(!departure ||!destination||!weight||!phone||!detail ||!fee){
             return res.status(400).json({
@@ -31,7 +31,7 @@ export const newOrders =async(req,res)=>{
                 }
             });
         }
-    const order =new Order ({departure, destination, weight, phone, detail,orderID});
+    const order =new Order ({departure, destination, weight, phone, detail,fee,orderID});
         await order.save();
         return res.status(201).json({message:`order is successful submitted copy your order ID , ${orderID}`});
     } catch (error) {

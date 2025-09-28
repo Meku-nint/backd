@@ -42,7 +42,8 @@ export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
 
   const { riderName, riderEmail, phone,account,filled} = req.body;
-  console.log(req.body);
+  
+  
   const file = req.file ? req.file.filename : null;
 
   try {
@@ -97,18 +98,16 @@ export const getOrders =async (req,res)=>{
 }
 export const orderAccepted= async (req,res) => {
   const { orderID } = req.body;
-  console.log(orderID);
+
   try {
     const order = await Order.findOne({ orderID });
     if (!order) {
-      console.log("Order not found");
       return { error: "Order not found" };
     }
     order.status = "Accepted";
     await order.save();
     return res.status(200).json({ message: "Order status updated to Accepted" });
   } catch (error) {
-    console.error("Error updating order status:", error);
     return { error: error.message };
   }
 };

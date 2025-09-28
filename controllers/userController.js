@@ -87,3 +87,11 @@ export const setPrice = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+export const getOrders =async (req,res)=>{
+  try {
+    const orders=await Order.find({status:"Pending"});
+    return res.status(200).json(orders);
+  } catch (error) {
+    return res.status(500).json({error:error.message});
+  }
+}

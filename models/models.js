@@ -20,10 +20,16 @@ const orderSchema=new mongoose.Schema({
     orderID:{
         type:Number,required:true
     },
+    
+  rider:{
+    type:String,
+    default:"no one"
+  },
     payed:{
         type:Boolean,
         default:false
     },
+
     fee:{
         type:Number,
         required:true

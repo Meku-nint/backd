@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import { type } from "os";
-import { stringify } from "querystring";
 const orderSchema=new mongoose.Schema({
     departure:{
         type:String,required:true
@@ -36,15 +34,6 @@ const orderSchema=new mongoose.Schema({
     },
    status: {
     type: String,
-    enum: [
-      "Pending",
-      "Confirmed",
-      "Assigned",
-      "Picked Up",
-      "In Transit",
-      "Out for Delivery",
-      "Delivered",
-    ],
     default: "Pending",
   }
 },{timestamps:true});

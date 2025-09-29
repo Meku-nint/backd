@@ -108,7 +108,7 @@ export const orderAccepted= async (req,res) => {
     if (!order) {
       return { error: "Order not found" };
     }
-    order.status = "Accepted";
+    order.status = "Accepted"; 
     await order.save();
     return res.status(200).json({ message: "Order status updated to Accepted" });
   } catch (error) {

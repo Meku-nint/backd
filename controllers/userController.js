@@ -2,7 +2,6 @@ import express from "express"
 import multer from "multer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-
 import path from "path";
 import models  from "../models/models.js";
 const {Price,Order,Rider,Balance} =models;
@@ -16,7 +15,6 @@ const storage = multer.diskStorage({
 });
 
 export const upload = multer({ storage });
-
 export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);
     const {departure,destination,weight,phone,detail,fee}=req.body;
@@ -113,3 +111,26 @@ export const orderAccepted= async (req,res) => {
     return { error: error.message };
   }
 };
+export const loginRider=async(req,res)=>{
+  const {email,password}=req.body;
+  try {
+    const rider=await Rider.findOne({riderEmail:email});
+    if(!rider){
+      return res.status(404).json({error:"Rider not found"});
+    }
+    const isMatch= await bcrypt.compare(password,rider.password);
+    if(!isMatch){
+      return res.status(401).json({error:"Invalid password"});
+    }
+    const token=jwt.sign({
+      id:rider._id,
+      email:rider.riderEmail,
+      name:rider.riderName,
+      balance:rider.balance,
+      tip:rider.tip
+    },process.env.SECRET_KEY,{expiresIn:'5d'});
+    return res.status(200).json({message:"Login successful",token});
+  } catch (error) {
+    return res.status(500).json({error:error.message});
+  }
+}

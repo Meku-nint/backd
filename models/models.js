@@ -56,6 +56,14 @@ const riderSchema=new mongoose.Schema({
     },
     account:{
         type:String,required:true
+    },
+    balance:{
+        type:Number,
+        default:0
+    },
+    tip:{
+        type:Number,
+        default:0
     }
 },{timestamps:true});
 const priceSchema = new mongoose.Schema({

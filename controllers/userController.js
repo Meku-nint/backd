@@ -42,7 +42,11 @@ export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
 
   const { riderName, riderEmail, phone,account,filled} = req.body;
-  
+  const hashedPassword = await bcrypt.hash(password.toString(), 10);
+  const riderExists = await Rider.findOne({ riderEmail});
+  if (riderExists) {
+    return res.status(400).json({ error: "Rider with this email already exists" });
+  }
   
   const file = req.file ? req.file.filename : null;
 
@@ -55,7 +59,7 @@ export const newRider = async (req, res) => {
       riderEmail,
       phone,
       file,
-      password,
+      password: hashedPassword,
       account
     });
 
@@ -124,10 +128,7 @@ export const loginRider=async(req,res)=>{
     }
     const token=jwt.sign({
       id:rider._id,
-      email:rider.riderEmail,
-      name:rider.riderName,
-      balance:rider.balance,
-      tip:rider.tip
+      email:rider.riderEmail
     },process.env.SECRET_KEY,{expiresIn:'5d'});
     return res.status(200).json({message:"Login successful",token});
   } catch (error) {

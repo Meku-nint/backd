@@ -42,7 +42,7 @@ const riderSchema=new mongoose.Schema({
         type:String,required:true
     },
     riderEmail:{
-        type:String,required:true
+        type:String,required:true,unique:true
     },
     phone:{
           type:String,required:true

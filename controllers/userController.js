@@ -1,6 +1,8 @@
 import express from "express"
-
 import multer from "multer";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
+
 import path from "path";
 import models  from "../models/models.js";
 const {Price,Order,Rider,Balance} =models;

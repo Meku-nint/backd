@@ -40,7 +40,7 @@ export const newOrders =async(req,res)=>{
 }
 export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
-
+  console.log(password);
   const { riderName, riderEmail, phone,account,filled} = req.body;
   const hashedPassword = await bcrypt.hash(password.toString(), 10);
   const riderExists = await Rider.findOne({ riderEmail});

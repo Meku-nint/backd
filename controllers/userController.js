@@ -3,9 +3,8 @@ import multer from "multer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import path from "path";
-import Auth from "../middlewares/auth.js";
 import models  from "../models/models.js";
-const {Price,Order,Rider,Balance} =models;
+const {Price,Order,Rider,Balance,deliveredOrder} =models;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -95,21 +94,33 @@ export const setPrice = async (req, res) => {
 };
 export const getOrders =async (req,res)=>{
   try {
-    const orders=await Order.find({status:"Pending"});
+const orders = await Order.find({ status: { $ne: "Completed" } }).sort({ createdAt: -1 });
     return res.status(200).json(orders);
   } catch (error) {
     return res.status(500).json({error:error.message});
   }
 }
-export const orderAccepted= async (req,res) => {
-  const { orderID } = req.body;
-
+export const updateOrders= async (req,res) => {
+  const { orderID,newStatus,name} = req.body;
+  if (!orderID || !newStatus||!name) {
+    return { error: "Order ID and new status are required" };
+  }
   try {
     const order = await Order.findOne({ orderID });
     if (!order) {
       return { error: "Order not found" };
     }
-    order.status = "Accepted"; 
+    order.status = newStatus;
+    order.riderName=name;
+    if(newStatus==="Completed"){
+      const delivered=new deliveredOrder({
+        riderName:name,
+        orderID:order.orderID,
+        Payment:order.fee,
+        Tip:order.tip
+      });
+      await delivered.save();
+    }
     await order.save();
     return res.status(200).json({ message: "Order status updated to Accepted" });
   } catch (error) {
@@ -129,7 +140,8 @@ export const loginRider=async(req,res)=>{
     }
     const token=jwt.sign({
       id:rider._id,
-      email:rider.riderEmail
+      email:rider.riderEmail,
+      name:rider.riderName
     },process.env.SECRET_KEY,{expiresIn:'5d'});
     return res.status(200).json({message:"Login successful",token});
   } catch (error) {

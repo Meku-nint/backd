@@ -76,15 +76,35 @@ const priceSchema = new mongoose.Schema({
     required: true
   }
 });
-
+const deliveredOrderSchema=new mongoose.Schema({
+    riderName:{
+        type:String,required:true
+    },
+    orderID:{
+        type:Number,required:true
+    },Payment:{
+        type:Number,required:true,
+        default:0
+    },
+        Tip:{
+        type:Number,
+        default:0,
+        required:true
+    },
+    createdAt:{
+        type:Date,
+        default:new Date().toLocaleDateString()
+    }
+});    
 const balanceSchema=new mongoose.Schema({
         userId:{type:mongoose.Schema.Types.ObjectId,ref:"Rider",required:true},
             Name:{type:String,required:true},
                 balance:{type:Number,default:0},
                     status:{type:String,default:"unpaid"}
 })
+const deliveredOrder=mongoose.model("deliveredOrder",deliveredOrderSchema);
 const Balance=mongoose.model("Balance",balanceSchema);
 const Price = mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);
-export default {Price,Order,Rider,Balance};
+export default {Price,Order,Rider,Balance,deliveredOrder};

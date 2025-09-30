@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { newOrders,getOrders,newRider,upload,setPrice,orderAccepted,loginRider} from "../controllers/userController.js";
+import { newOrders,getOrders,newRider,upload,setPrice,orderAccepted,loginRider,getProfile} from "../controllers/userController.js";
+import Auth from "../middlewares/auth.js";
 const router=Router();
 router.post('/price',setPrice);
 router.post('/orders',newOrders);
@@ -7,4 +8,5 @@ router.get('/rider/getOrders',getOrders);
 router.patch('/rider/updateOrder',orderAccepted);
 router.post("/riders", upload.single("file"), newRider);
 router.post("/rider/login",loginRider);
+router.get("/rider/profile",Auth,getProfile);
 export default router;

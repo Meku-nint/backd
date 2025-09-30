@@ -3,6 +3,7 @@ import multer from "multer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import path from "path";
+import Auth from "../middlewares/auth.js";
 import models  from "../models/models.js";
 const {Price,Order,Rider,Balance} =models;
 const storage = multer.diskStorage({
@@ -133,5 +134,20 @@ export const loginRider=async(req,res)=>{
     return res.status(200).json({message:"Login successful",token});
   } catch (error) {
     return res.status(500).json({error:error.message});
+  }
+}
+export const getProfile =async(req,res)=>{
+  try {
+    console.log("there is some thing");
+    const riderId=req.user.id;
+    const rider=await Rider.findById(riderId).select('-password');
+    if(!rider){
+      console.log(riderId);
+      return res.status(404).json({error:"Rider not found"});
+    }
+    return res.status(200).json(rider);
+    console.log(rider);
+  } catch (error) {
+    res.status(500).json({error:error.message});
   }
 }

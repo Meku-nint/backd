@@ -138,7 +138,6 @@ export const loginRider=async(req,res)=>{
 }
 export const getProfile =async(req,res)=>{
   try {
-    console.log("there is some thing");
     const riderId=req.user.id;
     const rider=await Rider.findById(riderId).select('-password');
     if(!rider){

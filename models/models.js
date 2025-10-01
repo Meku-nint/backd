@@ -100,6 +100,7 @@ const balanceSchema=new mongoose.Schema({
         userId:{type:mongoose.Schema.Types.ObjectId,ref:"Rider",required:true},
             Name:{type:String,required:true},
                 balance:{type:Number,default:0},
+                tip:{type:Number,default:0},
                     status:{type:String,default:"unpaid"}
 })
 const deliveredOrder=mongoose.model("deliveredOrder",deliveredOrderSchema);

@@ -120,6 +120,20 @@ export const updateOrders= async (req,res) => {
         Tip:order.tip
       });
       await delivered.save();
+      const balanceRecord=await Balance.findOne({userId:order.riderId,status:"unpaid"});
+      if(balanceRecord){
+        balanceRecord.balance+=order.fee;
+        balanceRecord.tip+=order.tip;
+        await balanceRecord.save();
+      }else{
+        const newBalance=new Balance({
+          userId:order.riderId,
+          Name:name,
+          balance:order.fee,
+          tip:order.tip
+        });
+        await newBalance.save();
+      }
     }
     await order.save();
     return res.status(200).json({ message: "Order status updated to Accepted" });
@@ -153,11 +167,9 @@ export const getProfile =async(req,res)=>{
     const riderId=req.user.id;
     const rider=await Rider.findById(riderId).select('-password');
     if(!rider){
-      console.log(riderId);
       return res.status(404).json({error:"Rider not found"});
     }
     return res.status(200).json(rider);
-    console.log(rider);
   } catch (error) {
     res.status(500).json({error:error.message});
   }

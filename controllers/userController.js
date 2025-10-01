@@ -99,6 +99,7 @@ const orders = await Order.find({ status: { $ne: "Completed" } }).sort({ created
     return res.status(500).json({error:error.message});
   }
 }
+
 export const updateOrders= async (req,res) => {
   const { orderID,newStatus,name,riderID} = req.body;
   if (!orderID || !newStatus||!name||!riderID) {
@@ -170,3 +171,34 @@ export const getProfile =async(req,res)=>{
     res.status(500).json({error:error.message});
   }
 }
+export const deliveredOrders = async (req, res) => {
+  try {
+    const riderName = req.user.name; // from auth middleware
+
+    // Automatically take today's date
+    const targetDate = new Date();
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const orders = await deliveredOrder.find({
+      riderName,
+      createdAt: { $gte: startOfDay, $lte: endOfDay }
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: orders.length,
+      date: targetDate.toISOString().split("T")[0],
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching delivered orders:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching delivered orders",
+    });
+  }
+};

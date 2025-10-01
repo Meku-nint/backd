@@ -40,7 +40,6 @@ export const newOrders =async(req,res)=>{
 }
 export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
-  console.log(password);
   const { riderName, riderEmail, phone,account,filled} = req.body;
   const hashedPassword = await bcrypt.hash(password.toString(), 10);
   const riderExists = await Rider.findOne({ riderEmail});
@@ -101,8 +100,8 @@ const orders = await Order.find({ status: { $ne: "Completed" } }).sort({ created
   }
 }
 export const updateOrders= async (req,res) => {
-  const { orderID,newStatus,name} = req.body;
-  if (!orderID || !newStatus||!name) {
+  const { orderID,newStatus,name,riderID} = req.body;
+  if (!orderID || !newStatus||!name||!riderID) {
     return { error: "Order ID and new status are required" };
   }
   try {
@@ -111,7 +110,8 @@ export const updateOrders= async (req,res) => {
       return { error: "Order not found" };
     }
     order.status = newStatus;
-    order.riderName=name;
+    order.rider=name;
+
     if(newStatus==="Completed"){
       const delivered=new deliveredOrder({
         riderName:name,
@@ -120,23 +120,19 @@ export const updateOrders= async (req,res) => {
         Tip:order.tip
       });
       await delivered.save();
-      const balanceRecord=await Balance.findOne({userId:order.riderId,status:"unpaid"});
+      const balanceRecord=await Balance.findOne({userId:riderID});
       if(balanceRecord){
         balanceRecord.balance+=order.fee;
-        balanceRecord.tip+=order.tip;
         await balanceRecord.save();
-      }else{
-        const newBalance=new Balance({
-          userId:order.riderId,
-          Name:name,
-          balance:order.fee,
-          tip:order.tip
-        });
-        await newBalance.save();
+      }
+      const updateBalance=await Rider.findOne({_id:riderID});
+      if(updateBalance){
+        updateBalance.balance+=order.fee;
+        await updateBalance.save();
       }
     }
     await order.save();
-    return res.status(200).json({ message: "Order status updated to Accepted" });
+    return res.status(200).json({ message: "Order status successfully updated" });
   } catch (error) {
     return { error: error.message };
   }

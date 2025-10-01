@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 const orderSchema=new mongoose.Schema({
     departure:{
         type:String,required:true

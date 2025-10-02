@@ -209,7 +209,7 @@ export const getProfile =async(req,res)=>{
     const riderId=req.user.id;
     const rider=await Rider.findById(riderId).select('-password');
     if(!rider){
-      return res.status(404).json({error:"Rider not found"});
+      return res.status(404).json({error:"There is no rider in this data"});
     }
     return res.status(200).json(rider);
   } catch (error) {

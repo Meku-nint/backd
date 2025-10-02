@@ -1,6 +1,7 @@
 import { strict } from "assert";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import { type } from "os";
+import { stringify } from "querystring";
 const orderSchema=new mongoose.Schema({
     departure:{
         type:String,required:true
@@ -78,6 +79,26 @@ const priceSchema = new mongoose.Schema({
     required: true
   }
 });
+const managerSchema=new  mongoose.Sq({
+    userName:{
+        type:String,
+        required:true
+    },
+    password :{
+        type:String,
+        required:true
+    },
+    role:{
+        type:String,
+        required:true,
+        default:"user"
+    },
+    access:{
+        type:String,
+        required:true,
+        default:"allowed"
+    }
+},{timestamps})
 const deliveredOrderSchema=new mongoose.Schema({
     riderName:{
         type:String,required:true
@@ -109,9 +130,10 @@ const balanceSchema=new mongoose.Schema({
                 tip:{type:Number,default:0},
                     status:{type:String,default:"unpaid"}
 })
+const Manager=mongoose.model("Manager",managerSchema);
 const deliveredOrder=mongoose.model("deliveredOrder",deliveredOrderSchema);
 const Balance=mongoose.model("Balance",balanceSchema);
 const Price = mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);
-export default {Price,Order,Rider,Balance,deliveredOrder};
+export default {Price,Order,Rider,Balance,deliveredOrder,Manager};

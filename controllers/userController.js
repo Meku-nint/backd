@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import path from "path";
 import models  from "../models/models.js";
-const {Price,Order,Rider,Balance,deliveredOrder} =models;
+const {Price,Order,Rider,Balance,deliveredOrder,Manager} =models;
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -159,6 +159,49 @@ export const loginRider=async(req,res)=>{
     return res.status(200).json({message:"Login successful",token});
   } catch (error) {
     return res.status(500).json({error:error.message});
+  }
+}
+export const loginManager=async(req,res)=>{
+  const {userName,password}=req.body;
+  try {
+    const manager=await Manager.findOne(userName);
+    if(!manager){
+           return res.status(404).json({message:"Invalid credential"});
+    }
+ const isMatch= await bcrypt.compare(password,manager.password);
+    if(!isMatch){
+      return res.status(401).json({error:"Invalid password"});
+    }
+    const mangerToken=jwt.sign({
+      id:manager._id,
+      name:manager.userName,
+      access:manager.access
+    },process.env.SECRET_KEY_MANAGER,{expiresIn:'5d'});
+    return res.status(200).json({message:"Login successful",mangerToken});
+  } catch (error) {
+    return res.status(500).json({error:error.message});
+  }
+}
+const addManager=async(req,res)=>{
+  const {userName,password}=req.body;
+ 
+  try {
+     if(!userName||!password){
+    return res.status(404).json({message:"All fields are required"});
+  }
+  const hashed = await bcrypt.hash(password.toString(), 10);
+     const managerExist = await Manager.findOne({ userName});
+  if (managerExist) {
+    return res.status(400).json({ error: "Manager with this email already exists" });
+  }
+  const newManager=new Manager({
+    userName,
+    password:hashed
+  })
+   await newManager.save();
+   return res.status(201).json({ message: "The Manager added successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 }
 export const getProfile =async(req,res)=>{

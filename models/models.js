@@ -79,7 +79,7 @@ const priceSchema = new mongoose.Schema({
     required: true
   }
 });
-const managerSchema=new  mongoose.Sq({
+const managerSchema=new  mongoose.Schema({
     userName:{
         type:String,
         required:true
@@ -98,7 +98,7 @@ const managerSchema=new  mongoose.Sq({
         required:true,
         default:"allowed"
     }
-},{timestamps})
+},{timestamps:true})
 const deliveredOrderSchema=new mongoose.Schema({
     riderName:{
         type:String,required:true

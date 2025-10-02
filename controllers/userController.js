@@ -114,11 +114,13 @@ export const updateOrders= async (req,res) => {
     order.rider=name;
 
     if(newStatus==="Completed"){
+      const createdDate=new Date().toLocaleDateString();
       const delivered=new deliveredOrder({
         riderName:name,
         orderID:order.orderID,
         Payment:order.fee,
-        Tip:order.tip
+        Tip:order.tip,
+        createdDate
       });
       await delivered.save();
       const balanceRecord=await Balance.findOne({userId:riderID});
@@ -173,29 +175,19 @@ export const getProfile =async(req,res)=>{
 }
 export const deliveredOrders = async (req, res) => {
   try {
-    const riderName = req.user.name; // from auth middleware
-
-    // Automatically take today's date
-    const targetDate = new Date();
-    const startOfDay = new Date(targetDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(targetDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
+    const riderName = req.user.name; 
+    const createdDate =new Date().toLocaleDateString();
     const orders = await deliveredOrder.find({
       riderName,
-      createdAt: { $gte: startOfDay, $lte: endOfDay }
+      createdDate
     }).sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
       count: orders.length,
-      date: targetDate.toISOString().split("T")[0],
       orders,
     });
   } catch (error) {
-    console.error("Error fetching delivered orders:", error);
     return res.status(500).json({
       success: false,
       message: "Server error while fetching delivered orders",

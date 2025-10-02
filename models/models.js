@@ -1,3 +1,4 @@
+import { strict } from "assert";
 import mongoose from "mongoose";
 import { type } from "os";
 const orderSchema=new mongoose.Schema({
@@ -90,6 +91,10 @@ const deliveredOrderSchema=new mongoose.Schema({
         Tip:{
         type:Number,
         default:0,
+        required:true
+    },
+    createdDate:{
+        type:String,
         required:true
     },
     createdAt:{

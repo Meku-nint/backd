@@ -182,7 +182,7 @@ export const loginManager=async(req,res)=>{
     return res.status(500).json({error:error.message});
   }
 }
-const addManager=async(req,res)=>{
+export const addManager=async(req,res)=>{
   const {userName,password}=req.body;
  
   try {

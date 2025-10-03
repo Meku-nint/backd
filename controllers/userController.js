@@ -1,4 +1,3 @@
-import express from "express"
 import multer from "multer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
@@ -63,7 +62,7 @@ export const newRider = async (req, res) => {
     });
 
     await rider.save();
-    const balance = new Balance({userId:rider._id,Name:rider.riderName});
+    const balance = new Balance({userId:rider._id,Name:rider.riderName,account:rider.account});
     await balance.save();
     return res.status(201).json({ message: "The rider added successfully" });
   } catch (error) {
@@ -172,12 +171,12 @@ export const loginManager=async(req,res)=>{
     if(!isMatch){
       throw new Error("Invalid password");
     }
-    const mangerToken=jwt.sign({
+    const managerToken=jwt.sign({
       id:manager._id,
       name:manager.userName,
       access:manager.access
     },process.env.SECRET_KEY_MANAGER,{expiresIn:'5d'});
-    return res.status(200).json({message:"Login successful",mangerToken});
+    return res.status(200).json({message:"Login successful",managerToken});
   } catch (error) {
     return res.status(500).json({error:error.message});
   }
@@ -236,7 +235,6 @@ export const deliveredOrders = async (req, res) => {
     });
   }
 };
-
 export const riderBalance=async(req,res)=>{
   try {
     const ridersBalance=await Balance.find();

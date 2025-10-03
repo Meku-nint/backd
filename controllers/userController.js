@@ -236,3 +236,12 @@ export const deliveredOrders = async (req, res) => {
     });
   }
 };
+
+export const riderBalance=async(req,res)=>{
+  try {
+    const ridersBalance=await Balance.find();
+    return res.status(200).json(ridersBalance);
+  } catch (error) {
+    return res.status(500).json({error:error.message});
+  }
+}

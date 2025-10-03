@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { newOrders,getOrders,newRider,upload,setPrice,loginRider,getProfile,updateOrders, deliveredOrders,loginManager,addManager} from "../controllers/userController.js";
+import { newOrders,riderBalance,getOrders,newRider,upload,setPrice,loginRider,getProfile,updateOrders, deliveredOrders,loginManager,addManager} from "../controllers/userController.js";
 import Auth from "../middlewares/auth.js";
 import BossAuth from "../middlewares/bossAuth.js";
 const router=Router();
@@ -13,4 +13,5 @@ router.get("/rider/profile",Auth,getProfile);
 router.get("/rider/deliveredOrders",Auth,deliveredOrders);
 router.post("/manager/addManager",addManager);
 router.post("/manager/login",loginManager);
+router.get("/manager/getBalance",BossAuth,riderBalance);
 export default router;

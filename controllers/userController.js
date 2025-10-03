@@ -164,13 +164,13 @@ export const loginRider=async(req,res)=>{
 export const loginManager=async(req,res)=>{
   const {userName,password}=req.body;
   try {
-    const manager=await Manager.findOne(userName);
+    const manager=await Manager.findOne({userName});
     if(!manager){
-           return res.status(404).json({message:"Invalid credential"});
+      throw new Error("Manager not found");
     }
  const isMatch= await bcrypt.compare(password,manager.password);
     if(!isMatch){
-      return res.status(401).json({error:"Invalid password"});
+      throw new Error("Invalid password");
     }
     const mangerToken=jwt.sign({
       id:manager._id,
@@ -184,7 +184,6 @@ export const loginManager=async(req,res)=>{
 }
 export const addManager=async(req,res)=>{
   const {userName,password}=req.body;
- 
   try {
      if(!userName||!password){
     return res.status(404).json({message:"All fields are required"});

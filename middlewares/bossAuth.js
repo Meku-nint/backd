@@ -6,16 +6,13 @@ const SECRET_KEY = process.env.SECRET_KEY_MANAGER;
 const BossAuth = (req, res, next) => {
 
     const authorization = req.headers.authorization;
-    console.log("Headers received:", req.headers);
 
     if (!authorization) {
-        console.log('No Authorization Header');
         return res.status(401).json({ message: 'No Authorization Header' });
     }
 
     const token = authorization.startsWith('Bearer ') ? authorization.split(' ')[1] : null;
     if (!token) {
-        console.log('No Authorization Header');
         return res.status(401).json({ message: 'Invalid Token Format' });
     }
 

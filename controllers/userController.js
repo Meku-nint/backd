@@ -243,3 +243,28 @@ export const riderBalance=async(req,res)=>{
     return res.status(500).json({error:error.message});
   }
 }
+
+export const payRider = async (req, res) => {
+  const { userId } = req.body;
+  if (!userId) {
+    console.log("Rider ID is required");
+    return res.status(400).json({ error: "Rider ID is required" });
+  }
+  try {
+
+    const balanceRecord = await Balance.findOne({ userId});
+    if (!balanceRecord) {
+      console.log("Balance record not found");
+      return res.status(404).json({ error: "Balance record not found" });
+    }
+    if (balanceRecord.status === "paid") {
+      return res.status(400).json({ error: "Rider has already been paid" });
+    }
+    balanceRecord.status = "paid";
+    balanceRecord.balance = 0;
+    await balanceRecord.save();
+    return res.status(200).json({ message: "Rider payment successful" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}

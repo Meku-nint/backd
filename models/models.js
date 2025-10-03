@@ -50,10 +50,6 @@ const riderSchema=new mongoose.Schema({
     phone:{
           type:String,required:true
     },
-    filled:{
-
-    type:String
-    },
     password:{
         type:String,required:true
     },

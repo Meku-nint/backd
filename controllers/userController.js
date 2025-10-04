@@ -265,3 +265,14 @@ export const payRider = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 }
+export const ridersProfile=async(req,res)=>{
+  try {
+    const riders=await Rider.find().select('-password');
+    if(!riders){ 
+      return res.status(404).json({error:"There is no rider in this data"});
+    }
+    return res.status(200).json(riders);
+  } catch (error) {
+    res.status(500).json({error:error.message});
+  }
+}

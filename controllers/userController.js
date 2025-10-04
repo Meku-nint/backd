@@ -46,10 +46,8 @@ export const newRider = async (req, res) => {
     return res.status(400).json({ error: "Rider with this email already exists" });
   }
   
-  const file = req.file ? req.file.filename : null;
-
   try {
-    if (!riderEmail || !riderName || !phone) {
+    if (!riderEmail || !riderName || !phone||!account) {
       return res.status(400).json({ error: "All fields are required" });
     }
     const rider = new Rider({
@@ -59,7 +57,7 @@ export const newRider = async (req, res) => {
       password: hashedPassword,
       account
     });
-
+ console.log(password);
     await rider.save();
     const balance = new Balance({userId:rider._id,Name:rider.riderName,account:rider.account});
     await balance.save();

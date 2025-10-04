@@ -7,7 +7,7 @@ router.post('/price',setPrice);
 router.post('/orders',newOrders);
 router.get('/rider/getOrders',getOrders);
 router.patch('/rider/updateOrder',updateOrders);
-router.post("/riders", upload.single("file"), newRider);
+router.post("/riders",newRider);
 router.post("/rider/login",loginRider);
 router.get("/rider/profile",Auth,getProfile);
 router.get("/rider/deliveredOrders",Auth,deliveredOrders);

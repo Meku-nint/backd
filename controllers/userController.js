@@ -1,19 +1,8 @@
-import multer from "multer";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import path from "path";
 import models  from "../models/models.js";
+import nodemailer from "nodemailer";
 const {Price,Order,Rider,Balance,deliveredOrder,Manager} =models;
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-export const upload = multer({ storage });
 export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);
     const {departure,destination,weight,phone,detail,fee}=req.body;

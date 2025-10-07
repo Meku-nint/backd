@@ -65,6 +65,12 @@ const riderSchema=new mongoose.Schema({
         default:0
     }
 },{timestamps:true});
+const emailSchema=new mongoose.Schema({
+    email:{
+        type:String,
+        required:true,
+    }
+},{timestamps:true});
 const priceSchema = new mongoose.Schema({
   price: {
     type: Number,

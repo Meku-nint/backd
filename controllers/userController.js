@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import models  from "../models/models.js";
 import nodemailer from "nodemailer";
-const {Price,Order,Rider,Balance,deliveredOrder,Manager} =models;
+const {Price,Order,Rider,Balance,Email,deliveredOrder,Manager} =models;
 export const newOrders =async(req,res)=>{
     const orderID=Math.floor(Math.random()*100000);
     const {departure,destination,weight,phone,detail,fee}=req.body;
@@ -50,6 +50,10 @@ export const newRider = async (req, res) => {
     await rider.save();
     const balance = new Balance({userId:rider._id,Name:rider.riderName,account:rider.account});
     await balance.save();
+        const newEmail=new Email({
+        email:riderEmail
+      });
+    await newEmail.save();
     return res.status(201).json({ message: "The rider added successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message });

@@ -139,4 +139,5 @@ const Balance=mongoose.model("Balance",balanceSchema);
 const Price = mongoose.model("Price",priceSchema);
 const Order=mongoose.model("Order",orderSchema);
 const Rider=mongoose.model("Rider",riderSchema);
-export default {Price,Order,Rider,Balance,deliveredOrder,Manager};
+const Email=mongoose.model("Email",emailSchema);
+export default {Email,Price,Order,Rider,Balance,deliveredOrder,Manager};

@@ -1,31 +1,12 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import express from "express";
 import models  from "../models/models.js";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 const {Price,Order,Rider,Balance,Email,deliveredOrder,Manager} =models;
-export const newOrders =async(req,res)=>{
-    const orderID=Math.floor(Math.random()*100000);
-    const {departure,destination,weight,phone,detail,fee}=req.body;
-    try {
-        if(!departure ||!destination||!weight||!phone||!detail ||!fee){
-            return res.status(400).json({
-                error:"All fields are required",
-                missing:{
-                    departure:!departure,
-                    destination:!destination,
-                    weight:!weight,
-                    phone:!phone,
-                    detail:!detail,              
-                }
-            });
-        }
-    const order =new Order ({departure, destination, weight, phone, detail,fee,orderID});
-        await order.save();
-        return res.status(201).json({message:`order is successful submitted copy your order ID it helps u to track your order, ${orderID}`});
-    } catch (error) {
-        return res.status(500).json({error:error.message});
-    }
-}
+
 export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
   const { riderName, riderEmail, phone,account} = req.body;
@@ -269,3 +250,69 @@ export const ridersProfile=async(req,res)=>{
     res.status(500).json({error:error.message});
   }
 }
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+const sendOrderEmail = async (riderEmails, orderDetails) => {
+  try {
+    const mailOptions = {
+      from: `"Delivery App" <${process.env.EMAIL_USER}>`,
+      to: riderEmails,
+      subject: "🚨 New Order Alert!",
+      html: `
+        <h2>🚴 New Order Available!</h2>
+        <p>A new order has just been placed. Please check your dashboard to accept it.</p>
+        <p><strong>Order Summary:</strong></p>
+        <ul>
+          ${orderDetails
+            .map(
+              (item) =>
+                `<li>${item.name} - ${item.quantity} × $${item.price}</li>`
+            )
+            .join("")}
+        </ul>
+      `,
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Rider email sent:", info.response);
+  } catch (error) {
+    console.error("❌ Error sending rider email:", error);
+  }
+};
+export const newOrders = async (req, res) => {
+  const orderID = Math.floor(Math.random() * 100000);
+  const { departure, destination, weight, phone, detail, fee } = req.body;
+
+  try {
+    if (!departure || !destination || !weight || !phone || !detail || !fee) {
+      return res.status(400).json({
+        error: "All fields are required",
+        missing: {
+          departure: !departure,
+          destination: !destination,
+          weight: !weight,
+          phone: !phone,
+          detail: !detail,
+        },
+      });
+    }
+    const order = new Order({ departure, destination, weight, phone, detail, fee, orderID });
+    await order.save();
+    const riders = await Email.find({}, "email");
+    const riderEmails = riders.map((rider) => rider.email);
+    const orderDetails = [
+      { from: departure,to:destination, price: fee },
+    ];
+    sendOrderEmail(riderEmails, orderDetails);
+    return res.status(201).json({
+      message: `Order submitted successfully! Your order ID: ${orderID}`,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};

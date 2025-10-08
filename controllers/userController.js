@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
-import express from "express";
 import models  from "../models/models.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";

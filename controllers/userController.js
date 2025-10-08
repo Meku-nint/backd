@@ -6,40 +6,68 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 const {Price,Order,Rider,Balance,Email,deliveredOrder,Manager} =models;
-
 export const newRider = async (req, res) => {
   const password = Math.floor(Math.random() * 10000000);
-  const { riderName, riderEmail, phone,account} = req.body;
-  const hashedPassword = await bcrypt.hash(password.toString(), 10);
-  const riderExists = await Rider.findOne({ riderEmail});
-  if (riderExists) {
-    return res.status(400).json({ error: "Rider with this email already exists" });
-  }
-  
+  const { riderName, riderEmail, phone, account } = req.body;
+
   try {
-    if (!riderEmail || !riderName || !phone||!account) {
+    if (!riderEmail || !riderName || !phone || !account) {
       return res.status(400).json({ error: "All fields are required" });
     }
+    const riderExists = await Rider.findOne({ riderEmail });
+    if (riderExists) {
+      return res.status(400).json({ error: "Rider with this email already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
     const rider = new Rider({
       riderName,
       riderEmail,
       phone,
       password: hashedPassword,
-      account
+      account,
     });
- console.log(password);
     await rider.save();
-    const balance = new Balance({userId:rider._id,Name:rider.riderName,account:rider.account});
+    const balance = new Balance({
+      userId: rider._id,
+      Name: rider.riderName,
+      account: rider.account,
+    });
     await balance.save();
-        const newEmail=new Email({
-        email:riderEmail
-      });
+    const newEmail = new Email({ email: riderEmail });
     await newEmail.save();
-    return res.status(201).json({ message: "The rider added successfully" });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Delivery App" <${process.env.EMAIL_USER}>`,
+      to: riderEmail,
+      subject: "🚴Welcome to Delivery App — Your Account Details",
+      html: `
+        <h2>Welcome aboard, ${riderName}!</h2>
+        <p>We’re excited to have you as part of our delivery team.</p>
+        <p>Here are your login details:</p>
+        <ul>
+          <li><strong>Email:</strong> ${riderEmail}</li>
+          <li><strong>Password:</strong> ${password}</li>
+        </ul>
+        <p>Please log in <a href="https://u.com">here</a> and change your password as soon as possible for security reasons.</p>
+        <p> <strong>Let’s start delivering!</strong></p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    return res.status(201).json({ message: "Rider added and email sent successfully!" });
   } catch (error) {
+    console.error("❌ Error in newRider:", error);
     return res.status(500).json({ error: error.message });
   }
 };
+
 export const setPrice = async (req, res) => {
   const { price, weight } = req.body;
 
@@ -218,14 +246,14 @@ export const riderBalance=async(req,res)=>{
 export const payRider = async (req, res) => {
   const { userId } = req.body;
   if (!userId) {
-    console.log("Rider ID is required");
     return res.status(400).json({ error: "Rider ID is required" });
   }
   try {
 
     const balanceRecord = await Balance.findOne({ userId});
     if (!balanceRecord) {
-      console.log("Balance record not found");
+      
+
       return res.status(404).json({ error: "Balance record not found" });
     }
     if (balanceRecord.status === "paid") {
@@ -268,20 +296,19 @@ const sendOrderEmail = async (riderEmails, orderDetails) => {
         <p>A new order has just been placed. Please check your dashboard to accept it.</p>
         <p><strong>Order Summary:</strong></p>
         <ul>
-          ${orderDetails
-            .map(
-              (item) =>
-                `<li>${item.name} - ${item.quantity} × $${item.price}</li>`
-            )
-            .join("")}
+          <li>From: ${orderDetails.from}</li>
+          <li>To: ${orderDetails.to}</li>
+          <li>Price: ${orderDetails.price} Birr</li>
+          <p>Click <a href="http://localhost:3000/rider/login">here</a> to login and view the order details.</p>
         </ul>
       `,
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Rider email sent:", info.response);
+
   } catch (error) {
-    console.error("❌ Error sending rider email:", error);
+
+    console.error("Error sending email:", error);
   }
 };
 export const newOrders = async (req, res) => {
@@ -305,9 +332,11 @@ export const newOrders = async (req, res) => {
     await order.save();
     const riders = await Email.find({}, "email");
     const riderEmails = riders.map((rider) => rider.email);
-    const orderDetails = [
-      { from: departure,to:destination, price: fee },
-    ];
+   const orderDetails = {
+  from: departure,
+  to: destination,
+  price: fee
+};
     sendOrderEmail(riderEmails, orderDetails);
     return res.status(201).json({
       message: `Order submitted successfully! Your order ID: ${orderID}`,

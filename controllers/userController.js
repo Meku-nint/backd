@@ -344,3 +344,28 @@ export const newOrders = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+export const trackOrder = async (req, res) => {
+  const { trackingId } = req.params; // get trackingId from URL
+
+  if (!trackingId) {
+    return res.status(400).json({ error: "Tracking ID is required" });
+  }
+
+  try {
+    const order = await Order.findOne({ orderID: trackingId });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    return res.status(200).json({
+      id: order.orderID,
+      phone: order.phone,
+      status: order.status,
+      rider: order.rider,
+      updatedAt: order.updatedAt,
+    });
+  } catch (error) {
+    console.error("Error tracking order:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};

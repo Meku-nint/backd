@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { newOrders,riderBalance,getOrders,payRider,newRider,setPrice,loginRider,getProfile,updateOrders, deliveredOrders,loginManager,addManager,ridersProfile} from "../controllers/userController.js";
+import { newOrders,riderBalance,getOrders,payRider,newRider,setPrice,loginRider,getProfile,updateOrders, deliveredOrders,loginManager,addManager,ridersProfile, trackOrder} from "../controllers/userController.js";
 import Auth from "../middlewares/auth.js";
 import BossAuth from "../middlewares/bossAuth.js";
 const router=Router();
@@ -16,4 +16,5 @@ router.post("/manager/login",loginManager);
 router.get("/manager/getBalance",BossAuth,riderBalance);
 router.patch("/manager/payRider",BossAuth,payRider);
 router.get("/riders/profile",BossAuth,ridersProfile);
+router.get("/trackorder/:trackingId", trackOrder);
 export default router;

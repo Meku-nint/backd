@@ -2,14 +2,27 @@ import express from "express";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import useRoutes from "./routes/useRoutes.js";
-import cors from 'cors';
+import cors from "cors";
+
 dotenv.config();
 connectDB();
-const app=express();
-app.use(cors());
+
+const app = express();
+
+// ✅ Configure CORS properly
+app.use(
+  cors({
+    origin: ["https://ylakun-43gr.vercel.app", "http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
-app.use("/api",useRoutes);
-const PORT =process.env.PORT||3000;
-app.listen(PORT,()=>{
-    console.log(`The server running on port ${PORT}`);
+
+app.use("/api", useRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

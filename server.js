@@ -9,10 +9,9 @@ connectDB();
 
 const app = express();
 
-// ✅ Configure CORS properly
 app.use(
   cors({
-    origin: ["https://ylakun-43gr.vercel.app","https://dvmanager-95du.vercel.app"],
+    origin: ["https://ylakun-43gr.vercel.app","https://dvmanager-95du.vercel.app","https://prov-gilt.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })

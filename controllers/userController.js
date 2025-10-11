@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const {Price,Order,Rider,Balance,Email,deliveredOrder,Manager} =models;
 export const newRider = async (req, res) => {
-  const password = Math.floor(Math.random() * 10000000);
+  const password = 111111;
   const { riderName, riderEmail, phone, account } = req.body;
 
   try {

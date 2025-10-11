@@ -3,13 +3,9 @@ import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import useRoutes from "./routes/useRoutes.js";
 import cors from "cors";
-
 dotenv.config();
 connectDB();
-
 const app = express();
-
-// ✅ Configure CORS properly
 app.use(
   cors({
     origin: ["https://ylakun-43gr.vercel.app","https://dvmanager-95du.vercel.app", "http://localhost:3000"],

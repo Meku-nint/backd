@@ -3,19 +3,32 @@ import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import useRoutes from "./routes/useRoutes.js";
 import cors from "cors";
+
 dotenv.config();
 connectDB();
+
 const app = express();
+
+app.use((req, res, next) => {
+  console.log("Request from origin:", req.headers.origin);
+  next();
+});
+
 app.use(
   cors({
-    origin: ["https://ylakun-43gr.vercel.app","https://dvmanager-95du.vercel.app", "http://localhost:3000"],
+    origin: [
+      "https://ylakun-43gr.vercel.app",
+      "https://dvmanager-95du.vercel.app",
+      "http://localhost:3000"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
 
-app.use(express.json());
+app.options("*", cors()); // handles preflight requests
 
+app.use(express.json());
 app.use("/api", useRoutes);
 
 const PORT = process.env.PORT || 3000;

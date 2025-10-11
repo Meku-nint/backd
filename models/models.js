@@ -100,7 +100,7 @@ const managerSchema=new  mongoose.Schema({
         required:true,
         default:"allowed"
     }
-},{timestamps:true})
+},{timestamps:true});
 const deliveredOrderSchema=new mongoose.Schema({
     riderName:{
         type:String,required:true

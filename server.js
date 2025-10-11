@@ -9,26 +9,17 @@ connectDB();
 
 const app = express();
 
-app.use((req, res, next) => {
-  console.log("Request from origin:", req.headers.origin);
-  next();
-});
-
+// ✅ Configure CORS properly
 app.use(
   cors({
-    origin: [
-      "https://ylakun-43gr.vercel.app",
-      "https://dvmanager-95du.vercel.app",
-      "http://localhost:3000"
-    ],
+    origin: ["https://ylakun-43gr.vercel.app","https://dvmanager-95du.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
 
-app.options("*", cors()); // handles preflight requests
-
 app.use(express.json());
+
 app.use("/api", useRoutes);
 
 const PORT = process.env.PORT || 3000;
